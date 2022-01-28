@@ -1,8 +1,11 @@
-from speechToText import convert_dir_mp3_to_wav, similarity
+from speechToText import convert_dir_mp3_to_wav
 from speechToText import Google_wav
 from speechToText import resample
 from speechToText import sentiment
 from speechToText import similarity
+from speechToText import predict
+from numpy.linalg import norm
+import numpy as np
 import os
 
 
@@ -34,6 +37,28 @@ for file in arr:
         VOSK_wav(file)  """
 
 
-#similarity()
+#TEST sentiment
+def cosine_sim(a, b):
+      return np.inner(a, b) / (norm(a) * norm(b))
 
-sentiment()
+m_model = similarity()
+x = m_model.get_sentence_vector('دو نفر در بیمارستان بستری بودند .یک نفر میتوانست تکون بخوره اما دیگری نمیتونست')
+y = m_model.get_sentence_vector('دو نفر تو بیمارستان بستری بودن.یکیشون میتونست تکون بخوره اما دیگری نه')
+z = m_model.get_sentence_vector('دو تا مرد بستری بودند که یکیشون میتونست حرکت بکنه  اما اون یکی نه')
+w = m_model.get_sentence_vector('دو بیمارستان در کنار هم ساخته شده اند')
+xy = cosine_sim(x,y)
+yz = cosine_sim(y,z)
+zx = cosine_sim(x,z)
+xw = cosine_sim(x,w)
+wy = cosine_sim(y,w)
+wz = cosine_sim(z,w)
+print(xy,yz,zx,xw,wy,wz)
+###
+
+#TEST sentiment
+x_model , tokenizer = sentiment()
+pred,prob = predict(x_model ,np.array(['دوست داشتنی بود'
+                                        ,'واقعا از قدرت نویسنده لذت بردم داستان کوتاهیه ولی به قول یکی از دوستان داستان تا همیشه گوشه‌ای از ذهن ادم‌میمونه خیلی خوب بود خیلی'
+                                        ,'اصلا خوب نبود']) ,tokenizer,max_len=128)
+print(pred,prob)
+###
