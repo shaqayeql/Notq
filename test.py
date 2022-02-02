@@ -7,6 +7,7 @@ from speechToText import predict
 from numpy.linalg import norm
 import numpy as np
 import os
+from numpy.linalg import microsoft_from_file
 
 
 sampleRate = 4000
@@ -38,7 +39,7 @@ for file in arr:
 
 
 #TEST sentiment
-def cosine_sim(a, b):
+""" def cosine_sim(a, b):
       return np.inner(a, b) / (norm(a) * norm(b))
 
 m_model = similarity()
@@ -52,13 +53,17 @@ zx = cosine_sim(x,z)
 xw = cosine_sim(x,w)
 wy = cosine_sim(y,w)
 wz = cosine_sim(z,w)
-print(xy,yz,zx,xw,wy,wz)
+print(xy,yz,zx,xw,wy,wz) """
 ###
 
 #TEST sentiment
-x_model , tokenizer = sentiment()
+""" x_model , tokenizer = sentiment()
 pred,prob = predict(x_model ,np.array(['دوست داشتنی بود'
                                         ,'واقعا از قدرت نویسنده لذت بردم داستان کوتاهیه ولی به قول یکی از دوستان داستان تا همیشه گوشه‌ای از ذهن ادم‌میمونه خیلی خوب بود خیلی'
                                         ,'اصلا خوب نبود']) ,tokenizer,max_len=128)
-print(pred,prob)
+print(pred,prob) """
+###
+
+#TEST Microsoft Speech To Text
+microsoft_from_file()
 ###

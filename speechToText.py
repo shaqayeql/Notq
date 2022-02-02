@@ -24,6 +24,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+import requests
+import azure.cognitiveservices.speech as speechsdk
+
 labels = ['negative', 'positive']
 MODEL_NAME_OR_PATH = 'HooshvareLab/bert-fa-base-uncased'
 
@@ -367,4 +370,14 @@ def sentiment():
     x_model.load_state_dict(torch.load('/content/drive/MyDrive/pytorch_model.bin', map_location=torch.device('cpu')))#if gpu is ready delete map location arg
 
     return x_model , tokenizer
+###
+
+#Microsoft Speech To Text
+def microsoft_from_file():
+    speech_config = speechsdk.SpeechConfig(subscription="<paste-your-speech-key-here>", region="<paste-your-speech-location/region-here>")
+    audio_input = speechsdk.AudioConfig(filename="your_file_name.wav")
+    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_input)
+    
+    result = speech_recognizer.recognize_once_async().get()
+    print(result.text)
 ###
