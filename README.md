@@ -28,12 +28,12 @@ resample(directory_resample , sampleRate, singleFilePath = False)
 VOSK_wav(filename , directory_voice , directory_text)
 ```
 ### Google_wav
-This function convers speech to text using Google Speech Recognition. filename is the name of file that we want convert it. directory_voice is the directory that our file is there. directory_text is the directory that output text saves there.
+This function converts speech to text using Google Speech Recognition. filename is the name of file that we want convert it. directory_voice is the directory that our file is there. directory_text is the directory that output text saves there.
 ```python
 Google_wav(filename , directory_voice , directory_text)
 ```
 ### microsoft_from_file
-This function convers speech to text using microsoft azure.
+This function converts speech to text using microsoft azure.
 ```python
 microsoft_from_file()
 ```
