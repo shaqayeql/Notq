@@ -33,7 +33,7 @@ This function converts speech to text using Google Speech Recognition. filename 
 Google_wav(filename , directory_voice , directory_text)
 ```
 ### microsoft_from_file
-This function converts speech to text using microsoft azure.
+This function converts speech to text using [microsoft azure](https://azure.microsoft.com/en-us/services/cognitive-services/speech-to-text/#overview).
 ```python
 microsoft_from_file()
 ```
