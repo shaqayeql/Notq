@@ -23,7 +23,7 @@ This function changes sample rate of file/files to the desired rate. If singleFi
 resample(directory_resample , sampleRate, singleFilePath = False)
 ```
 ### VOSK_wav
-[Vosk](https://alphacephei.com/vosk/) is an offline speech recognition toolkit and this function convers speech to text using Vosk toolkit. filename is the name of file that we want convert it. directory_voice is the directory that our file is there. directory_text is the directory that output text saves there.
+[Vosk](https://alphacephei.com/vosk/) is an offline speech recognition toolkit and this function converts speech to text using Vosk toolkit. filename is the name of file that we want convert it. directory_voice is the directory that our file is there. directory_text is the directory that output text saves there.
 ```python
 VOSK_wav(filename , directory_voice , directory_text)
 ```
