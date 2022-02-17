@@ -1,34 +1,36 @@
+# resample
 import torchaudio
 import os
+
+# convert_dir_mp3_to_wav
 import glob
 from pydub import AudioSegment
-from vosk import Model, KaldiRecognizer, SetLogLevel
-import os
-import wave
-import speech_recognition as sr
-import fasttext
-from numpy.linalg import norm
 
+# vosk_wav
+from vosk import Model, KaldiRecognizer, SetLogLevel
+import wave
+
+# Google_wav
+import speech_recognition as sr
+
+# Similarity
+import fasttext
+
+# Sentiment
 import numpy as np
 from tqdm.notebook import tqdm
-
-import os
-
 from transformers import BertConfig, BertTokenizer
 from transformers import BertModel
-
-from transformers import AdamW
-from transformers import get_linear_schedule_with_warmup
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import requests
-import azure.cognitiveservices.speech as speechsdk
-
 labels = ['negative', 'positive']
 MODEL_NAME_OR_PATH = 'HooshvareLab/bert-fa-base-uncased'
+
+# microsoft_from_file
+import azure.cognitiveservices.speech as speechsdk
+
 
 def convert_dir_mp3_to_wav(audio_path , singleFilePath = False):
     """ This function converts mp3 file/files to wav file/files. If singleFilePath sets False,
@@ -194,16 +196,65 @@ def Google_wav(filename , directory_voice , directory_text):
         print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
+#Microsoft Speech To Text
+def microsoft_from_file():
+    speech_config = speechsdk.SpeechConfig(subscription="<paste-your-speech-key-here>", region="<paste-your-speech-location/region-here>")
+    audio_input = speechsdk.AudioConfig(filename="your_file_name.wav")
+    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, language="fa", audio_config=audio_input)
+    
+    result = speech_recognizer.recognize_once_async().get()
+    print(result.text)
+
+
 
 # Similarity
 def similarity():
     m_model = fasttext.load_model("/Users/Shaghayegh/Desktop/My Project/cc.fa.300.bin")
     return m_model
 
-###
+
 
 
 # Sentiment
+def sentiment():
+    
+    device = setup_device()
+
+    # general config
+    MAX_LEN = 128
+    TRAIN_BATCH_SIZE = 16
+    VALID_BATCH_SIZE = 16
+    TEST_BATCH_SIZE = 16
+
+    EPOCHS = 3
+    EEVERY_EPOCH = 1000
+    LEARNING_RATE = 2e-5
+    CLIP = 0.0
+   
+    os.makedirs(os.path.dirname("/Users/Shaghayegh/Desktop/My Project/output"), exist_ok=True)
+
+    # create a key finder based on label 2 id and id to label
+    label2id = {label: i for i, label in enumerate(labels)}
+    id2label = {v: k for k, v in label2id.items()}
+
+    print(f'label2id: {label2id}')
+    print(f'id2label: {id2label}')
+
+
+    # setup the tokenizer and configuration
+    tokenizer = BertTokenizer.from_pretrained(MODEL_NAME_OR_PATH)
+    config = BertConfig.from_pretrained(
+        MODEL_NAME_OR_PATH, **{
+            'label2id': label2id,
+            'id2label': id2label,
+        })
+
+    x_model = SentimentModel(config=config)
+    x_model = x_model.to(device)
+    x_model.load_state_dict(torch.load('/content/drive/MyDrive/pytorch_model.bin', map_location=torch.device('cpu')))#if gpu is ready delete map location arg
+
+    return x_model , tokenizer
+ 
 class SentimentModel(nn.Module):
     
     def __init__(self, config):
@@ -282,7 +333,6 @@ def setup_device():
 
     return device
 
-
 def create_data_loader(x, y, tokenizer, max_len, batch_size, label_list):
     dataset = TaaghcheDataset(
         comments=x,
@@ -292,7 +342,6 @@ def create_data_loader(x, y, tokenizer, max_len, batch_size, label_list):
         label_list=label_list)
     
     return torch.utils.data.DataLoader(dataset, batch_size=batch_size)
-
 
 def predict(model, comments, tokenizer, max_len=128, batch_size=32):
     device = setup_device()
@@ -330,54 +379,4 @@ def predict(model, comments, tokenizer, max_len=128, batch_size=32):
     prediction_probs = torch.stack(prediction_probs).cpu().detach().numpy()
 
     return predictions, prediction_probs
-
-
-def sentiment():
-
-    device = setup_device()
-
-    # general config
-    MAX_LEN = 128
-    TRAIN_BATCH_SIZE = 16
-    VALID_BATCH_SIZE = 16
-    TEST_BATCH_SIZE = 16
-
-    EPOCHS = 3
-    EEVERY_EPOCH = 1000
-    LEARNING_RATE = 2e-5
-    CLIP = 0.0
-   
-    os.makedirs(os.path.dirname("/Users/Shaghayegh/Desktop/My Project/output"), exist_ok=True)
-
-    # create a key finder based on label 2 id and id to label
-    label2id = {label: i for i, label in enumerate(labels)}
-    id2label = {v: k for k, v in label2id.items()}
-
-    print(f'label2id: {label2id}')
-    print(f'id2label: {id2label}')
-
-
-    # setup the tokenizer and configuration
-    tokenizer = BertTokenizer.from_pretrained(MODEL_NAME_OR_PATH)
-    config = BertConfig.from_pretrained(
-        MODEL_NAME_OR_PATH, **{
-            'label2id': label2id,
-            'id2label': id2label,
-        })
-
-    x_model = SentimentModel(config=config)
-    x_model = x_model.to(device)
-    x_model.load_state_dict(torch.load('/content/drive/MyDrive/pytorch_model.bin', map_location=torch.device('cpu')))#if gpu is ready delete map location arg
-
-    return x_model , tokenizer
-###
-
-#Microsoft Speech To Text
-def microsoft_from_file():
-    speech_config = speechsdk.SpeechConfig(subscription="<paste-your-speech-key-here>", region="<paste-your-speech-location/region-here>")
-    audio_input = speechsdk.AudioConfig(filename="your_file_name.wav")
-    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, language="fa", audio_config=audio_input)
-    
-    result = speech_recognizer.recognize_once_async().get()
-    print(result.text)
 ###
