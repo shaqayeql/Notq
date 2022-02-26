@@ -16,6 +16,8 @@ import speech_recognition as sr
 # Similarity
 import fasttext
 
+modelPath = "/Users/Shaghayegh/Desktop/My Project/cc.fa.300.bin"
+
 # Sentiment
 import numpy as np
 from tqdm.notebook import tqdm
@@ -27,9 +29,16 @@ import torch.nn.functional as F
 
 labels = ['negative', 'positive']
 MODEL_NAME_OR_PATH = 'HooshvareLab/bert-fa-base-uncased'
+sentimentFilename ="/Users/Shaghayegh/Desktop/My Project/output"
+modelPath = '/content/drive/MyDrive/pytorch_model.bin'
 
 # microsoft_from_file
 import azure.cognitiveservices.speech as speechsdk
+
+subscription="<paste-your-speech-key-here>"
+region="<paste-your-speech-location/region-here>"
+filename="your_file_name.wav"
+language="fa"
 
 
 def convert_dir_mp3_to_wav(audio_path , singleFilePath = False):
@@ -197,26 +206,27 @@ def Google_wav(filename , directory_voice , directory_text):
 
 
 #Microsoft Speech To Text
-def microsoft_from_file():
-    speech_config = speechsdk.SpeechConfig(subscription="<paste-your-speech-key-here>", region="<paste-your-speech-location/region-here>")
-    audio_input = speechsdk.AudioConfig(filename="your_file_name.wav")
-    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, language="fa", audio_config=audio_input)
+def microsoft_from_file(filename , subscription , region):
+    speech_config = speechsdk.SpeechConfig(subscription , region)
+    audio_input = speechsdk.AudioConfig(filename)
+    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, language="fa" , audio_config=audio_input)
     
     result = speech_recognizer.recognize_once_async().get()
-    print(result.text)
+    return result.text
 
 
 
 # Similarity
-def similarity():
-    m_model = fasttext.load_model("/Users/Shaghayegh/Desktop/My Project/cc.fa.300.bin")
+def similarity(modelPath):
+    m_model = fasttext.load_model(modelPath)
     return m_model
 
 
 
 
 # Sentiment
-def sentiment():
+
+def sentiment(sentimentFilename , modelPath):
     
     device = setup_device()
 
@@ -231,7 +241,7 @@ def sentiment():
     LEARNING_RATE = 2e-5
     CLIP = 0.0
    
-    os.makedirs(os.path.dirname("/Users/Shaghayegh/Desktop/My Project/output"), exist_ok=True)
+    os.makedirs(os.path.dirname(sentimentFilename), exist_ok=True)
 
     # create a key finder based on label 2 id and id to label
     label2id = {label: i for i, label in enumerate(labels)}
@@ -251,7 +261,7 @@ def sentiment():
 
     x_model = SentimentModel(config=config)
     x_model = x_model.to(device)
-    x_model.load_state_dict(torch.load('/content/drive/MyDrive/pytorch_model.bin', map_location=torch.device('cpu')))#if gpu is ready delete map location arg
+    x_model.load_state_dict(torch.load(modelPath , map_location=torch.device('cpu')))#if gpu is ready delete map location arg
 
     return x_model , tokenizer
  
