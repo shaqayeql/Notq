@@ -1,3 +1,6 @@
+import subprocess
+import sys
+
 # resample
 import torchaudio
 import os
@@ -7,16 +10,13 @@ import glob
 from pydub import AudioSegment
 
 # vosk_wav
-from vosk import Model, KaldiRecognizer, SetLogLevel
 import wave
 
 # Google_wav
 import speech_recognition as sr
 
 # Similarity
-import fasttext
-
-modelPath = "/Users/Shaghayegh/Desktop/My Project/cc.fa.300.bin"
+similarityModelPath = "/Users/Shaghayegh/Desktop/My Project/cc.fa.300.bin"
 
 # Sentiment
 import numpy as np
@@ -30,11 +30,9 @@ import torch.nn.functional as F
 labels = ['negative', 'positive']
 MODEL_NAME_OR_PATH = 'HooshvareLab/bert-fa-base-uncased'
 sentimentFilename ="/Users/Shaghayegh/Desktop/My Project/output"
-modelPath = '/content/drive/MyDrive/pytorch_model.bin'
+sentimentModelPath = '/content/drive/MyDrive/pytorch_model.bin'
 
 # microsoft_from_file
-import azure.cognitiveservices.speech as speechsdk
-
 subscription="<paste-your-speech-key-here>"
 region="<paste-your-speech-location/region-here>"
 filename="your_file_name.wav"
@@ -126,6 +124,14 @@ def VOSK_wav(filename , directory_voice , directory_text):
         directory_voice is the directory that our file is there.
         directory_text is the directory that output text saves there. """
 
+    try:
+        from vosk import Model, KaldiRecognizer, SetLogLevel
+        print("module 'vosk' is installed")
+    except ModuleNotFoundError:
+        print("module 'vosk' is not installed")
+        # or
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "vosk==0.3.30"])
+
     SetLogLevel(0)
     file_split = filename[:-4]
 
@@ -173,15 +179,12 @@ def Google_wav(filename , directory_voice , directory_text):
     #!/usr/bin/env python3
 
     # obtain path to "english.wav" in the same folder as this script
-    from os import path
     AUDIO_FILE = (directory_voice + "\\" + filename)
 
     # use the audio file as the audio source
     r = sr.Recognizer()
     with sr.AudioFile(AUDIO_FILE) as source:
         audio = r.record(source)  # read the entire audio file
-
-    # recognize speech using Sphinx
 
     # recognize speech using Google Speech Recognition
     try:
@@ -207,6 +210,15 @@ def Google_wav(filename , directory_voice , directory_text):
 
 #Microsoft Speech To Text
 def microsoft_from_file(filename , subscription , region):
+
+    try:
+        import azure.cognitiveservices.speech as speechsdk
+        print("module 'azure-cognitiveservices-speech' is installed")
+    except ModuleNotFoundError:
+        print("module 'azure-cognitiveservices-speech' is not installed")
+        # or
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "azure-cognitiveservices-speech==1.20.0"])
+
     speech_config = speechsdk.SpeechConfig(subscription , region)
     audio_input = speechsdk.AudioConfig(filename)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, language="fa" , audio_config=audio_input)
@@ -217,8 +229,17 @@ def microsoft_from_file(filename , subscription , region):
 
 
 # Similarity
-def similarity(modelPath):
-    m_model = fasttext.load_model(modelPath)
+def similarity(similarityModelPath):
+
+    try:
+        import fasttext
+        print("module 'fasttext' is installed")
+    except ModuleNotFoundError:
+        print("module 'fasttext' is not installed")
+        # or
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "fasttext==0.9.2"])
+
+    m_model = fasttext.load_model(similarityModelPath)
     return m_model
 
 
@@ -226,7 +247,7 @@ def similarity(modelPath):
 
 # Sentiment
 
-def sentiment(sentimentFilename , modelPath):
+def sentiment(sentimentFilename , sentimentModelPath):
     
     device = setup_device()
 
@@ -261,7 +282,7 @@ def sentiment(sentimentFilename , modelPath):
 
     x_model = SentimentModel(config=config)
     x_model = x_model.to(device)
-    x_model.load_state_dict(torch.load(modelPath , map_location=torch.device('cpu')))#if gpu is ready delete map location arg
+    x_model.load_state_dict(torch.load(sentimentModelPath , map_location=torch.device('cpu')))#if gpu is ready delete map location arg
 
     return x_model , tokenizer
  

@@ -35,15 +35,15 @@ Google_wav(filename , directory_voice , directory_text)
 ### microsoft_from_file
 This function converts speech to text using [microsoft azure](https://azure.microsoft.com/en-us/services/cognitive-services/speech-to-text/#overview).
 ```python
-microsoft_from_file()
+microsoft_from_file(filename , subscription , region)
 ```
 ### similarity
 This function finds similarities between sentences using [model](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz) .
 ```python
-similarity()
+similarity(similarityModelPath)
 ```
 ### sentiment
 This function finds semantic similarity between sentences.
 ```python
-sentiment()
+sentiment(sentimentFilename , sentimentModelPath)
 ```
