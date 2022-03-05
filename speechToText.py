@@ -209,7 +209,8 @@ def Google_wav(filename , directory_voice , directory_text):
 
 #Microsoft Speech To Text
 def microsoft_from_file(filename , subscription , region):
-
+    """ This function converts speech to text using microsoft azure. """
+    
     try:
         import azure.cognitiveservices.speech as speechsdk
         print("module 'azure-cognitiveservices-speech' is installed")
