@@ -36,7 +36,6 @@ sentimentModelPath = '/content/drive/MyDrive/pytorch_model.bin'
 subscription="<paste-your-speech-key-here>"
 region="<paste-your-speech-location/region-here>"
 filename="your_file_name.wav"
-language="fa"
 
 
 def convert_dir_mp3_to_wav(audio_path , singleFilePath = False):

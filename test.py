@@ -4,10 +4,10 @@ from speechToText import resample
 from speechToText import sentiment
 from speechToText import similarity
 from speechToText import predict
-from numpy.linalg import norm
+from speechToText import VOSK_wav
 import numpy as np
 import os
-from numpy.linalg import microsoft_from_file
+from speechToText import microsoft_from_file
 
 
 sampleRate = 4000
@@ -32,10 +32,10 @@ for file in arr:
         #VOSK_wav(file)  '''
 
 
-#TEST Google_wav for a single file
-""" if filename[-3:] == "wav":
-        Google_wav(filename , directory_voice , directory_text)
-        VOSK_wav(file)  """
+#TEST VOSK for a single file
+#if filename[-3:] == "wav":
+        #Google_wav(filename , directory_voice , directory_text)
+''' VOSK_wav(filename , directory_voice ,directory_text ) '''
 
 
 #TEST sentiment
@@ -65,5 +65,9 @@ print(pred,prob) """
 ###
 
 #TEST Microsoft Speech To Text
-microsoft_from_file()
+''' subscription="<paste-your-speech-key-here>"
+region="<paste-your-speech-location/region-here>"
+filename="your_file_name.wav"
+
+microsoft_from_file(filename , subscription , region) '''
 ###
