@@ -37,6 +37,26 @@ subscription="<paste-your-speech-key-here>"
 region="<paste-your-speech-location/region-here>"
 filename="your_file_name.wav"
 
+#silenceTime
+from pydub import AudioSegment, silence
+
+
+def chooseFunction(functionName , filename = "your_file_name.wav" , directory_voice = "VOICE" , directory_text = "TEXT", similarityModelPath = "your_model_path" , sentimentFilename = "your_filename" , sentimentModelPath = "your_model_path"):
+    if functionName == "VOSK_wav":
+        VOSK_wav(filename , directory_voice , directory_text)
+    elif functionName == "Google_wav":
+        Google_wav(filename , directory_voice , directory_text)
+    elif functionName == "microsoft_from_file":
+        microsoft_from_file(filename , subscription , region)
+    elif functionName == "similarity":
+        similarity(similarityModelPath)
+    elif functionName == "sentiment":
+        sentiment(sentimentFilename , sentimentModelPath)
+    elif functionName == "silenceTime":
+        silenceTime(filename)
+    else:
+        Google_wav(filename , directory_voice , directory_text)
+
 
 def convert_dir_mp3_to_wav(audio_path , singleFilePath = False):
     """ This function converts mp3 file/files to wav file/files. If singleFilePath sets False,
@@ -117,7 +137,7 @@ def resample(directory_resample , sampleRate, singleFilePath = False):
 
 
 
-def VOSK_wav(filename , directory_voice , directory_text):
+def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "VOICE" , directory_text = "TEXT"):
     """ This function convers speech to text.
         filename is the name of file that we want convert it.
         directory_voice is the directory that our file is there.
@@ -127,9 +147,8 @@ def VOSK_wav(filename , directory_voice , directory_text):
         from vosk import Model, KaldiRecognizer, SetLogLevel
         print("module 'vosk' is installed")
     except ModuleNotFoundError:
-        print("module 'vosk' is not installed")
-        # or
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "vosk==0.3.30"])
+        print("module 'vosk' is not installed. please install vosk==0.3.30")
+
 
     SetLogLevel(0)
     file_split = filename[:-4]
@@ -169,7 +188,7 @@ def VOSK_wav(filename , directory_voice , directory_text):
 
 
 
-def Google_wav(filename , directory_voice , directory_text):
+def Google_wav(filename = "your_file_name.wav" , directory_voice = "VOICE" , directory_text = "TEXT"):
     """ This function convers speech to text with Google.
         filename is the name of file that we want convert it.
         directory_voice is the directory that our file is there.
@@ -208,7 +227,7 @@ def Google_wav(filename , directory_voice , directory_text):
 
 
 #Microsoft Speech To Text
-def microsoft_from_file(filename , subscription , region):
+def microsoft_from_file(filename = "your_file_name.wav" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
     """ This function converts speech to text using microsoft azure. """
     
     try:
@@ -229,7 +248,7 @@ def microsoft_from_file(filename , subscription , region):
 
 
 # Similarity
-def similarity(similarityModelPath):
+def similarity(similarityModelPath = "your_model_path"):
 
     try:
         import fasttext
@@ -247,7 +266,7 @@ def similarity(similarityModelPath):
 
 # Sentiment
 
-def sentiment(sentimentFilename , sentimentModelPath):
+def sentiment(sentimentFilename = "your_filename" , sentimentModelPath = "your_model_path"):
     
     device = setup_device()
 
@@ -411,3 +430,12 @@ def predict(model, comments, tokenizer, max_len=128, batch_size=32):
 
     return predictions, prediction_probs
 ###
+
+def silenceTime(filename = "your-filename.wav"):
+    myaudio = AudioSegment.from_wav(filename)
+    dBFS=myaudio.dBFS
+    
+    silence = silence.detect_silence(myaudio, min_silence_len=100, silence_thresh=dBFS-16)
+    silence = [((start/1000),(stop/1000)) for start,stop in silence] #convert to sec
+
+    print(silence)
