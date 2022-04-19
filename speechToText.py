@@ -38,22 +38,16 @@ region="<paste-your-speech-location/region-here>"
 filename="your_file_name.wav"
 
 #silenceTime
-from pydub import AudioSegment, silence
+from pydub import AudioSegment
 
 
-def chooseFunction(functionName , filename = "your_file_name.wav" , directory_voice = "VOICE" , directory_text = "TEXT", similarityModelPath = "your_model_path" , sentimentFilename = "your_filename" , sentimentModelPath = "your_model_path"):
+def speechToText(functionName , filename = "your_file_name.wav" , directory_voice = "your_voice_directory" , directory_text = "your_text_directory"):
     if functionName == "VOSK_wav":
         VOSK_wav(filename , directory_voice , directory_text)
     elif functionName == "Google_wav":
         Google_wav(filename , directory_voice , directory_text)
     elif functionName == "microsoft_from_file":
         microsoft_from_file(filename , subscription , region)
-    elif functionName == "similarity":
-        similarity(similarityModelPath)
-    elif functionName == "sentiment":
-        sentiment(sentimentFilename , sentimentModelPath)
-    elif functionName == "silenceTime":
-        silenceTime(filename)
     else:
         Google_wav(filename , directory_voice , directory_text)
 
@@ -137,7 +131,7 @@ def resample(directory_resample , sampleRate, singleFilePath = False):
 
 
 
-def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "VOICE" , directory_text = "TEXT"):
+def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_directory" , directory_text = "your_text_directory"):
     """ This function convers speech to text.
         filename is the name of file that we want convert it.
         directory_voice is the directory that our file is there.
@@ -188,7 +182,7 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "VOICE" , direc
 
 
 
-def Google_wav(filename = "your_file_name.wav" , directory_voice = "VOICE" , directory_text = "TEXT"):
+def Google_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_directory" , directory_text = "your_text_directory"):
     """ This function convers speech to text with Google.
         filename is the name of file that we want convert it.
         directory_voice is the directory that our file is there.
