@@ -47,3 +47,9 @@ This function finds semantic similarity between sentences.
 ```python
 sentiment(sentimentFilename , sentimentModelPath)
 ```
+### fluency
+This function calculates fluency factors in a .wav speech audio file, which are "SpeechRate", "ArticulationRate", "PhonationTimeRatio", "MeanLengthOfRuns".
+The default value for fluency factor type is "SpeechRate".
+```python
+caclulate_fluency(filename, fluencyType)
+```
