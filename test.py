@@ -1,13 +1,13 @@
-from speechToText import convert_dir_mp3_to_wav
-from speechToText import Google_wav
-from speechToText import resample
-from speechToText import sentiment
-from speechToText import similarity
-from speechToText import predict
-from speechToText import VOSK_wav
+from Notq import convert_dir_mp3_to_wav
+from Notq import Google_wav
+from Notq import resample
+from Notq import sentiment
+from Notq import similarity
+from Notq import predict
+from Notq import VOSK_wav
 import numpy as np
 import os
-from speechToText import microsoft_from_file
+from Notq import microsoft_from_file
 
 
 sampleRate = 4000

@@ -6,7 +6,7 @@ Notq is a Python base tool collected and developed for speech and language proce
 
 ## Install
 ```python
-pip install SpeechToText.py
+pip install git+https://github.com/shaqayeql/Notq#egg=Notq
 ```
 
 ## Documentation
