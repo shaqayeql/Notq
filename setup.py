@@ -11,7 +11,7 @@ setup(
     author='Nbic',
     long_description_content_type="text/markdown",
     packages=find_packages(include=["Notq*"]),
-    url="https://https://github.com/shaqayeql/Notq",
+    url="https://github.com/shaqayeql/Notq",
     install_requires=[],
 
     keywords=['python', 'first package'],
