@@ -11,6 +11,8 @@ from pydub import AudioSegment
 
 # vosk_wav
 import wave
+import wget
+import zipfile
 
 # Google_wav
 import speech_recognition as sr
@@ -42,7 +44,7 @@ from pydub import AudioSegment
 
 #fluency detector
 from pydub.silence import split_on_silence
-from persian_syllable_counter import PersianSyllableCounter
+from persian_syllable_counter.persian_syllable_counter import PersianSyllableCounter
 
 def caclulate_fluency(filename, fluencyType="SpeechRate"):
     fluency = Fluency(filename)
@@ -58,7 +60,7 @@ def caclulate_fluency(filename, fluencyType="SpeechRate"):
     else:
         return fluency.get_SpeechRate()
 
-def speechToText(functionName , filename = "your_file_name.wav" , directory_voice = "your_voice_directory" , directory_text = "your_text_directory"):
+def speechToText(functionName , filename = "your_file_name.wav" , directory_voice = "your_voice_directory" , directory_text = "your_text_directory" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
     if functionName == "VOSK_wav":
         VOSK_wav(filename , directory_voice , directory_text)
     elif functionName == "Google_wav":
@@ -66,7 +68,7 @@ def speechToText(functionName , filename = "your_file_name.wav" , directory_voic
     elif functionName == "microsoft_from_file":
         microsoft_from_file(filename , subscription , region)
     else:
-        Google_wav(filename , directory_voice , directory_text)
+        VOSK_wav(filename , directory_voice , directory_text)
 
 
 def convert_dir_mp3_to_wav(audio_path , singleFilePath = False):
@@ -156,16 +158,23 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
 
     try:
         from vosk import Model, KaldiRecognizer, SetLogLevel
-        print("module 'vosk' is installed")
     except ModuleNotFoundError:
         print("module 'vosk' is not installed. please install vosk==0.3.30")
 
+
+    
 
     SetLogLevel(0)
     file_split = filename[:-4]
 
     if not os.path.exists("model"):
         print ("Please download the model from https://alphacephei.com/vosk/models and unpack as 'model' in the current folder.")
+        print(os.getcwd())
+        url = "https://alphacephei.com/vosk/models/vosk-model-small-fa-0.4.zip"
+        wget.download(url, os.getcwd())
+        with zipfile.ZipFile(os.getcwd()+'\\vosk-model-small-fa-0.4.zip', 'r') as h:
+            h.extractall('model')
+
         exit (1)
 
     wf = wave.open(directory_voice + "\\" + filename , "rb")
@@ -566,4 +575,4 @@ def silenceTime(filename = "your-filename.wav"):
     silence = silence.detect_silence(myaudio, min_silence_len=100, silence_thresh=dBFS-16)
     silence = [((start/1000),(stop/1000)) for start,stop in silence] #convert to sec
 
-    print(silence)
+    return silence

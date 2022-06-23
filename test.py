@@ -1,44 +1,71 @@
-from Notq import convert_dir_mp3_to_wav
-from Notq import Google_wav
-from Notq import resample
-from Notq import sentiment
-from Notq import similarity
-from Notq import predict
-from Notq import VOSK_wav
-import numpy as np
-import os
-from Notq import microsoft_from_file
+from Notq.Notq import *
 
+# microsoft_from_file
+subscription="<paste-your-speech-key-here>"
+region="<paste-your-speech-location/region-here>"
 
 sampleRate = 4000
 
-singlePath_voice_mp3 = "C:\\Users\\Shaghayegh\\Desktop\\new\\SpeechToTextProject\\VOICE_AD"
+singlePath_voice_mp3 = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD"
 filename = "titleh.mp3.wav"
-directory_voice = "C:\\Users\\Shaghayegh\\Desktop\\new\\SpeechToTextProject\\VOICE_AD"
-directory_text = "C:\\Users\\Shaghayegh\\Desktop\\new\\SpeechToTextProject\\text"
-directory_resample = "C:\\Users\\Shaghayegh\\Desktop\\My Project\\code1\\VOICE_AD"
-singlePath_resample = "C:\\Users\\Shaghayegh\\Desktop\\My Project\\code1\\VOICE_AD\\titleh.mp3.wav"
-
-#convert_dir_mp3_to_wav(singlePath_voice_mp3 , True)
-
-#resample(singlePath_resample , sampleRate , True)
+directory_voice = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD"
+directory_text = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\text"
+directory_resample = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD"
+singlePath_resample = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD\\titleh.mp3.wav"
+singlePath_convert = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD\\titleh.mp3"
 
 
-#TEST Google_wav for a directory
-""" arr = os.listdir(directory_voice)
-for file in arr:
-    if file[-3:] == "wav":
-        Google_wav(file , directory_voice , directory_text)
-        #VOSK_wav(file) """
+## Test /convert_dir_mp3_to_wav/ (singleFilePath == False)
+''' convert_dir_mp3_to_wav(directory_voice , singleFilePath = False) '''
+
+## Test /convert_dir_mp3_to_wav/ (singleFilePath == True)
+''' convert_dir_mp3_to_wav(singlePath_convert , singleFilePath = True) '''
+
+## Test /resample/ (singleFilePath == False)
+''' resample(directory_resample , sampleRate , False) '''
+
+## Test /resample/ (singleFilePath == True)
+''' resample(singlePath_resample , sampleRate , True) '''
+
+## Test /speechToText/ (VOSK_wav)
+speechToText("VOSK_wav" , filename , directory_voice , directory_text)
+
+## Test /speechToText/ (Google_wav)
+''' speechToText("Google_wav" , filename , directory_voice , directory_text) '''
+
+## Test /speechToText/ (microsoft_from_file)
+''' speechToText("microsoft_from_file" , filename , directory_voice , directory_text, subscription, region) '''
+
+## Test /speechToText/ (default)
+''' speechToText("",filename , directory_voice , directory_text) '''
 
 
-#TEST VOSK for a single file
-#if filename[-3:] == "wav":
-        #Google_wav(filename , directory_voice , directory_text)
-''' VOSK_wav(filename , directory_voice ,directory_text ) '''
 
 
-#TEST sentiment
+
+''' cwd = os.getcwd()
+print(cwd) '''
+## Test /caclulate_fluency/
+#caclulate_fluency(singlePath_voice_mp3)
+
+
+#os.makedirs("model")
+''' import requests
+URL = "https://alphacephei.com/vosk/models/vosk-model-small-fa-0.4.zip"
+response = requests.get(URL)
+open("C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\model", "wb").write(response.content) '''
+
+
+
+
+
+
+
+
+
+
+
+#TEST similarity
 """ def cosine_sim(a, b):
       return np.inner(a, b) / (norm(a) * norm(b))
 
@@ -64,11 +91,4 @@ pred,prob = predict(x_model ,np.array(['دوست داشتنی بود'
 print(pred,prob) """
 ###
 
-#TEST Microsoft Speech To Text
-''' subscription="<paste-your-speech-key-here>"
-region="<paste-your-speech-location/region-here>"
-filename="your_file_name.wav"
-
-microsoft_from_file(filename , subscription , region) '''
-###
 
