@@ -28,7 +28,7 @@ singlePath_convert = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD\\t
 ''' resample(singlePath_resample , sampleRate , True) '''
 
 ## Test /speechToText/ (VOSK_wav)
-speechToText("VOSK_wav" , filename , directory_voice , directory_text)
+''' speechToText("VOSK_wav" , filename , directory_voice , directory_text) '''
 
 ## Test /speechToText/ (Google_wav)
 ''' speechToText("Google_wav" , filename , directory_voice , directory_text) '''
@@ -43,26 +43,13 @@ speechToText("VOSK_wav" , filename , directory_voice , directory_text)
 
 
 
-''' cwd = os.getcwd()
-print(cwd) '''
+
+
+
+
+
 ## Test /caclulate_fluency/
-#caclulate_fluency(singlePath_voice_mp3)
-
-
-#os.makedirs("model")
-''' import requests
-URL = "https://alphacephei.com/vosk/models/vosk-model-small-fa-0.4.zip"
-response = requests.get(URL)
-open("C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\model", "wb").write(response.content) '''
-
-
-
-
-
-
-
-
-
+''' caclulate_fluency(singlePath_voice_mp3) '''
 
 
 #TEST similarity

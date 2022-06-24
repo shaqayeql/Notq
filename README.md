@@ -59,3 +59,5 @@ The default value for fluency factor type is "SpeechRate".
 ```python
 caclulate_fluency(filename, fluencyType)
 ```
+## Test
+You can run test.py for testing functions that used in Notq library.
