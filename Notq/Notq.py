@@ -169,7 +169,6 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
 
     if not os.path.exists("model"):
         print ("Please download the model from https://alphacephei.com/vosk/models and unpack as 'model' in the current folder.")
-        print(os.getcwd())
         url = "https://alphacephei.com/vosk/models/vosk-model-small-fa-0.4.zip"
         wget.download(url, os.getcwd())
         with zipfile.ZipFile(os.getcwd()+'\\vosk-model-small-fa-0.4.zip', 'r') as h:

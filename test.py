@@ -6,13 +6,14 @@ region="<paste-your-speech-location/region-here>"
 
 sampleRate = 4000
 
-singlePath_voice_mp3 = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD"
+# os.getcwd() returns path of current directory
+singlePath_voice_mp3 = os.getcwd()+"\\VOICE_AD"
 filename = "titleh.mp3.wav"
-directory_voice = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD"
-directory_text = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\text"
-directory_resample = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD"
-singlePath_resample = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD\\titleh.mp3.wav"
-singlePath_convert = "C:\\Users\\Shaghayegh\\Desktop\\new_stt\\Notq\\VOICE_AD\\titleh.mp3"
+directory_voice = os.getcwd()+"\\VOICE_AD"
+directory_text = os.getcwd()+"\\text"
+directory_resample = os.getcwd()+"\\VOICE_AD"
+singlePath_resample = os.getcwd()+"\\VOICE_AD\\titleh.mp3.wav"
+singlePath_convert = os.getcwd()+"\\VOICE_AD\\titleh.mp3"
 
 
 ## Test /convert_dir_mp3_to_wav/ (singleFilePath == False)
