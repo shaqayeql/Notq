@@ -168,13 +168,16 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
     file_split = filename[:-4]
 
     if not os.path.exists("model"):
-        print ("Please download the model from https://alphacephei.com/vosk/models and unpack as 'model' in the current folder.")
-        url = "https://alphacephei.com/vosk/models/vosk-model-small-fa-0.4.zip"
-        wget.download(url, os.getcwd())
-        with zipfile.ZipFile(os.getcwd()+'\\vosk-model-small-fa-0.4.zip', 'r') as h:
-            h.extractall('model')
+        installation = input("The Vosk model is not Installed. If you want install the model, Please enter \"Yes\" otherwise enter \"No\":")
+        if (installation=="Yes" or installation=="yes") :
+            url = "https://alphacephei.com/vosk/models/vosk-model-small-fa-0.4.zip"
+            wget.download(url, os.getcwd())
+            with zipfile.ZipFile(os.getcwd()+'\\vosk-model-small-fa-0.4.zip', 'r') as h:
+                h.extractall()
+            os.rename("vosk-model-small-fa-0.4", "model")
 
-        exit (1)
+        else:
+            exit (1)
 
     wf = wave.open(directory_voice + "\\" + filename , "rb")
     if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":

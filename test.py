@@ -29,7 +29,7 @@ singlePath_convert = os.getcwd()+"\\VOICE_AD\\titleh.mp3"
 ''' resample(singlePath_resample , sampleRate , True) '''
 
 ## Test /speechToText/ (VOSK_wav)
-''' speechToText("VOSK_wav" , filename , directory_voice , directory_text) '''
+speechToText("VOSK_wav" , filename , directory_voice , directory_text)
 
 ## Test /speechToText/ (Google_wav)
 ''' speechToText("Google_wav" , filename , directory_voice , directory_text) '''
