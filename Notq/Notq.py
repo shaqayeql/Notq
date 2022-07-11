@@ -1,9 +1,10 @@
 import subprocess
 import sys
+import os
+from pathlib import *
 
 # resample
 import torchaudio
-import os
 
 # convert_dir_mp3_to_wav
 import glob
@@ -17,9 +18,6 @@ import zipfile
 # Google_wav
 import speech_recognition as sr
 
-# Similarity
-similarityModelPath = "/Users/Shaghayegh/Desktop/My Project/cc.fa.300.bin"
-
 # Sentiment
 import numpy as np
 from tqdm.notebook import tqdm
@@ -30,21 +28,23 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 labels = ['negative', 'positive']
-MODEL_NAME_OR_PATH = 'HooshvareLab/bert-fa-base-uncased'
-sentimentFilename ="/Users/Shaghayegh/Desktop/My Project/output"
-sentimentModelPath = '/content/drive/MyDrive/pytorch_model.bin'
 
-# microsoft_from_file
+# Microsoft
 subscription="<paste-your-speech-key-here>"
 region="<paste-your-speech-location/region-here>"
 filename="your_file_name.wav"
 
 #silenceTime
+from pydub import AudioSegment, silence
+
+#split_wavfile
 from pydub import AudioSegment
+import math
 
 #fluency detector
-from pydub.silence import split_on_silence
-from persian_syllable_counter.persian_syllable_counter import PersianSyllableCounter
+from persian_fluency_detector.persian_fluency import *
+
+
 
 def caclulate_fluency(filename, fluencyType="SpeechRate"):
     fluency = Fluency(filename)
@@ -65,8 +65,8 @@ def speechToText(functionName , filename = "your_file_name.wav" , directory_voic
         VOSK_wav(filename , directory_voice , directory_text)
     elif functionName == "Google_wav":
         Google_wav(filename , directory_voice , directory_text)
-    elif functionName == "microsoft_from_file":
-        microsoft_from_file(filename , subscription , region)
+    elif functionName == "Microsoft":
+        Microsoft(filename , subscription , region)
     else:
         VOSK_wav(filename , directory_voice , directory_text)
 
@@ -133,7 +133,7 @@ def resample(directory_resample , sampleRate, singleFilePath = False):
         arr = os.listdir(directory_resample)
         for file in arr:
             if file[-3:] == "wav":
-                fullPath = directory_resample + "\\" + file;
+                fullPath = directory_resample + os.sep + file;
                 waveform, sample_rate = torchaudio.load(fullPath)
                 print("***************")
                 print(fullPath)
@@ -161,9 +161,6 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
     except ModuleNotFoundError:
         print("module 'vosk' is not installed. please install vosk==0.3.30")
 
-
-    
-
     SetLogLevel(0)
     file_split = filename[:-4]
 
@@ -172,14 +169,14 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
         if (installation=="Yes" or installation=="yes") :
             url = "https://alphacephei.com/vosk/models/vosk-model-small-fa-0.4.zip"
             wget.download(url, os.getcwd())
-            with zipfile.ZipFile(os.getcwd()+'\\vosk-model-small-fa-0.4.zip', 'r') as h:
+            with zipfile.ZipFile(os.getcwd()+ os.sep +'vosk-model-small-fa-0.4.zip', 'r') as h:
                 h.extractall()
             os.rename("vosk-model-small-fa-0.4", "model")
 
         else:
             exit (1)
 
-    wf = wave.open(directory_voice + "\\" + filename , "rb")
+    wf = wave.open(directory_voice + os.sep + filename , "rb")
     if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
         print ("Audio file must be WAV format mono PCM.")
         exit (1)
@@ -189,7 +186,7 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
     rec.SetWords(True)
 
     #clean file
-    open(directory_text + "\\" + file_split + ".txt", 'w').close()
+    open(directory_text + os.sep + file_split + ".txt", 'w').close()
     while True:
         data = wf.readframes(4000)
         if len(data) == 0:
@@ -197,13 +194,13 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
         if rec.AcceptWaveform(data):
             string = rec.Result()
             text = string[string.find('"text"')+10:-3] + " "
-            f = open(directory_text + "\\" + file_split + ".txt", "ab")
+            f = open(directory_text + os.sep + file_split + ".txt", "ab")
             f.write(text.encode("utf-8"))
             f.close()
 
     string = rec.FinalResult()
     text = string[string.find('"text"')+10:-3].encode("utf-8")
-    f = open(directory_text + "\\" + file_split + ".txt", "ab")
+    f = open(directory_text + os.sep + file_split + ".txt", "ab")
     f.write(text)
     f.close()
     print(filename + " is done")
@@ -219,7 +216,7 @@ def Google_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_d
     #!/usr/bin/env python3
 
     # obtain path to "english.wav" in the same folder as this script
-    AUDIO_FILE = (directory_voice + "\\" + filename)
+    AUDIO_FILE = (directory_voice + os.sep + filename)
 
     # use the audio file as the audio source
     r = sr.Recognizer()
@@ -235,9 +232,9 @@ def Google_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_d
         file_split = filename[:-4]
 
         #clean file
-        open(directory_text + "\\" + file_split + ".txt", 'w').close()
+        open(directory_text + os.sep + file_split + ".txt", 'w').close()
 
-        f = open(directory_text + "\\" + file_split + ".txt", "ab")
+        f = open(directory_text + os.sep + file_split + ".txt", "ab")
         f.write(r.recognize_google(audio,language ='fa-IR').encode("utf-8"))
         f.close()
 
@@ -249,16 +246,13 @@ def Google_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_d
 
 
 #Microsoft Speech To Text
-def microsoft_from_file(filename = "your_file_name.wav" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
+def Microsoft(filename = "your_file_name.wav" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
     """ This function converts speech to text using microsoft azure. """
     
     try:
         import azure.cognitiveservices.speech as speechsdk
-        print("module 'azure-cognitiveservices-speech' is installed")
     except ModuleNotFoundError:
-        print("module 'azure-cognitiveservices-speech' is not installed")
-        # or
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "azure-cognitiveservices-speech==1.20.0"])
+        print("module 'azure-cognitiveservices-speech' is not installed. please install azure-cognitiveservices-speech==1.20.0")
 
     speech_config = speechsdk.SpeechConfig(subscription , region)
     audio_input = speechsdk.AudioConfig(filename)
@@ -272,13 +266,16 @@ def microsoft_from_file(filename = "your_file_name.wav" , subscription = "<paste
 # Similarity
 def similarity(similarityModelPath = "your_model_path"):
 
+    if not os.path.exists("cc.fa.300.bin"):
+        print("Please download model from https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz and unzip that")
+        exit(1)
+
+
     try:
         import fasttext
         print("module 'fasttext' is installed")
     except ModuleNotFoundError:
         print("module 'fasttext' is not installed")
-        # or
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "fasttext==0.9.2"])
 
     m_model = fasttext.load_model(similarityModelPath)
     return m_model
@@ -287,8 +284,9 @@ def similarity(similarityModelPath = "your_model_path"):
 
 
 # Sentiment
+MODEL_NAME_OR_PATH = 'HooshvareLab/bert-fa-base-uncased'
 
-def sentiment(sentimentFilename = "your_filename" , sentimentModelPath = "your_model_path"):
+def sentiment(listOfSentence):
     
     device = setup_device()
 
@@ -303,7 +301,7 @@ def sentiment(sentimentFilename = "your_filename" , sentimentModelPath = "your_m
     LEARNING_RATE = 2e-5
     CLIP = 0.0
    
-    os.makedirs(os.path.dirname(sentimentFilename), exist_ok=True)
+    
 
     # create a key finder based on label 2 id and id to label
     label2id = {label: i for i, label in enumerate(labels)}
@@ -311,7 +309,6 @@ def sentiment(sentimentFilename = "your_filename" , sentimentModelPath = "your_m
 
     print(f'label2id: {label2id}')
     print(f'id2label: {id2label}')
-
 
     # setup the tokenizer and configuration
     tokenizer = BertTokenizer.from_pretrained(MODEL_NAME_OR_PATH)
@@ -323,9 +320,11 @@ def sentiment(sentimentFilename = "your_filename" , sentimentModelPath = "your_m
 
     x_model = SentimentModel(config=config)
     x_model = x_model.to(device)
-    x_model.load_state_dict(torch.load(sentimentModelPath , map_location=torch.device('cpu')))#if gpu is ready delete map location arg
+    x_model.load_state_dict(torch.load(MODEL_NAME_OR_PATH , map_location=torch.device('cpu')))#if gpu is ready delete map location arg
 
-    return x_model , tokenizer
+    pred,prob = predict(x_model ,np.array(listOfSentence) ,tokenizer,max_len=128)
+
+    return pred,prob
  
 class SentimentModel(nn.Module):
     
@@ -391,123 +390,6 @@ class TaaghcheDataset(torch.utils.data.Dataset):
         
         return inputs
 
-class Fluency:
-    def __init__(self, _filename):
-        self.filename = _filename
-        self.SpeechToText = SpeechToText_for_syllable()
-        self.SyllableCounter = PersianSyllableCounter()
-        self.audio = AudioSegment.from_wav(self.filename)
-        self.SpeachRate = None
-        self.ArticulationRate = None
-        self.PhonationTimeRatio = None
-        self.MeanLengthOfRuns = None
-
-    def get_SpeechRate(self):
-        # The actual number of syllables uttered, divided by the total speech time in minutes. 
-        # This is the gross measure of speed of speech production, it includes the hesitation 
-        # in the total time spent speaking
-        if self.SpeachRate != None:
-            return self.SpeachRate
-        
-        text = self.SpeechToText.get_text_vosk(self.filename)
-        text_syllables = self.SyllableCounter.count_syllables_in_text(text)
-        audio_length = self.audio.duration_seconds / 60
-        self.SpeachRate = text_syllables / audio_length
-        return self.SpeachRate
-    
-    def get_ArticulationRate(self):
-        # The actual number of syllables uttured, divided by the total amount of time spent speaking.
-        # In this case, the hesitation time is eliminated from the calculation; this gives a measure
-        # of the speed of actual articulation only
-        if self.ArticulationRate != None:
-            return self.ArticulationRate
-        text = self.SpeechToText.get_text_vosk(self.filename)
-        text_syllables = self.SyllableCounter.count_syllables_in_text(text)
-        audio_chunks = split_on_silence(self.audio, min_silence_len=100, silence_thresh=-40)
-        audio_efficient_time_seconds = 0
-        for i, chunk in enumerate(audio_chunks):
-            audio_efficient_time_seconds += chunk.duration_seconds
-        self.ArticulationRate = text_syllables / (audio_efficient_time_seconds/60)
-        return self.ArticulationRate
-
-    def get_PhonationTimeRatio(self):
-        # This is determined by totaling the pause times for each speech sample and calculating it
-        # as a percent of the total speech time. It indicates the amount of hesitation relative to actual
-        # apeaking time, a combination measure of pause frequency and duration
-        if self.PhonationTimeRatio != None:
-            return self.PhonationTimeRatio
-        audio_chunks = split_on_silence(self.audio, min_silence_len=100, silence_thresh=-40)
-        audio_efficient_time_seconds = 0
-        for i, chunk in enumerate(audio_chunks):
-            audio_efficient_time_seconds += chunk.duration_seconds
-        
-        self.PhonationTimeRatio = 1 - (audio_efficient_time_seconds / self.audio.duration_seconds)
-        return self.PhonationTimeRatio
-    
-    def get_MeanLengthOfRuns(self):
-        # The mean number of syllables uttured between hesitations. It indicates the length of 
-        # utturance between pauses.
-        if self.MeanLengthOfRuns != None:
-            return self.MeanLengthOfRuns
-        audio_chunks = split_on_silence(self.audio, min_silence_len=800, silence_thresh=-40)
-        syllables_in_runs = []
-        if not os.path.exists("cache"):
-            os.mkdir("cache")
-        for i, chunk in enumerate(audio_chunks):
-            temp_output_file = "cache/segment"+str(i)+".wav"
-            chunk.export(temp_output_file, format="wav")
-            text = self.SpeechToText.get_text_vosk(temp_output_file)
-            os.remove(temp_output_file)
-            text_syllables = self.SyllableCounter.count_syllables_in_text(text)
-            syllables_in_runs.append(text_syllables)
-        os.rmdir("cache")
-        self.MeanLengthOfRuns = sum(syllables_in_runs) / len(syllables_in_runs)
-        return self.MeanLengthOfRuns
-
-class SpeechToText_for_syllable:        
-    def __init__(self):
-        try:
-            from vosk import Model, KaldiRecognizer, SetLogLevel
-            print("module 'vosk' is installed")
-        except ModuleNotFoundError:
-            print("module 'vosk' is not installed")
-            # or
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "vosk==0.3.30"])
-
-        SetLogLevel(-1)
-        if not os.path.exists("model"):
-            print ("Please download the model from https://alphacephei.com/vosk/models and unpack as 'model' in the current folder.")
-            exit (1)
-
-
-    def get_text_vosk(self, filename):
-        from vosk import Model, KaldiRecognizer
-        wf = wave.open(filename , "rb")
-        if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
-            print ("Audio file must be WAV format mono PCM.")
-            exit (1)
-
-        model = Model("model")
-        rec = KaldiRecognizer(model, wf.getframerate())
-        rec.SetWords(True)
-
-        #clean file
-        final_text = ""
-        while True:
-            data = wf.readframes(4000)
-            if len(data) == 0:
-                break
-            if rec.AcceptWaveform(data):
-                string = rec.Result()
-                text = string[string.find('"text"')+10:-3] + " "
-                final_text += text
-        string = rec.FinalResult()
-        text = string[string.find('"text"')+10:-3]
-        final_text += text
-
-        return final_text
-
-
 def setup_device():
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -570,11 +452,26 @@ def predict(model, comments, tokenizer, max_len=128, batch_size=32):
     return predictions, prediction_probs
 ###
 
-def silenceTime(filename = "your-filename.wav"):
-    myaudio = AudioSegment.from_wav(filename)
+def silenceTime(filePath = "your-filePath"):
+    myaudio = AudioSegment.from_wav(filePath)
     dBFS=myaudio.dBFS
     
-    silence = silence.detect_silence(myaudio, min_silence_len=100, silence_thresh=dBFS-16)
-    silence = [((start/1000),(stop/1000)) for start,stop in silence] #convert to sec
+    Silence = silence.detect_silence(myaudio, min_silence_len=100, silence_thresh=dBFS-16)
+    Silence = [((start/1000),(stop/1000)) for start,stop in Silence] #convert to sec
 
-    return silence
+    return Silence
+
+def split_wavfile(filePath = "your-filePath" , outputdirectory = "your-output-directory"):
+
+      audio = AudioSegment.from_wav(filePath)
+      total_mins = math.ceil(audio.duration_seconds / 60)
+      num = 0
+      for i in range(0, total_mins, 2):
+            t1 = i
+            t2 = i+2
+            t1 = t1 * 1000 * 60 #Works in (milliseconds * 60)=seconds
+            t2 = t2 * 1000 * 60
+            newAudio = audio[t1:t2]
+            newAudio.export((outputdirectory + os.sep + f'part{num}.wav'), format="wav")
+            num+=1
+      print('All splited successfully')
