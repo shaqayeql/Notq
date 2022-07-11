@@ -8,17 +8,14 @@ sampleRate = 4000
 
 # os.getcwd() returns path of current directory
 singlePath_voice_mp3 = os.getcwd()+"\\VOICE_AD"
-filename = "part2.wav"
+filename = "titleh.mp3.wav"
 directory_voice = os.getcwd()+"\\VOICE_AD"
 directory_text = os.getcwd()+"\\text"
 directory_resample = os.getcwd()+"\\VOICE_AD"
 singlePath_resample = os.getcwd()+"\\VOICE_AD\\_12341.mp3.wav"
 singlePath_convert = os.getcwd()+"\\VOICE_AD\\titleh.mp3"
 sentimentModelPath = 'HooshvareLab/bert-fa-base-uncased'
-sentimentFilename ="/Users/Shaghayegh/Desktop/My Project/output"
-sentimentModelPath = '/content/drive/MyDrive/pytorch_model.bin'
-# Similarity
-similarityModelPath = "/Users/Shaghayegh/Desktop/My Project/cc.fa.300.bin"
+similarityModelPath = os.getcwd()+"\\cc.fa.300.bin"
 
 
 ## Test /convert_dir_mp3_to_wav/ (singleFilePath == False)
@@ -34,7 +31,7 @@ similarityModelPath = "/Users/Shaghayegh/Desktop/My Project/cc.fa.300.bin"
 ''' resample(singlePath_resample , sampleRate , True) '''
 
 ## Test /speechToText/ (VOSK_wav)
-speechToText("VOSK_wav" , filename , directory_voice , directory_text)
+''' speechToText("VOSK_wav" , filename , directory_voice , directory_text) '''
 
 ## Test /speechToText/ (Google_wav)
 ''' speechToText("Google_wav" , filename , directory_voice , directory_text) '''
