@@ -19,7 +19,9 @@ setup(
                         'tqdm ==4.61.2',
                         'transformers ==4.11.2',
                         'torch ==1.9.0',
-                        'wget ==3.2'],
+                        'wget ==3.2',
+                        'persian_fluency_detector',
+                        'persian_syllable_counter'],
 
     dependency_links=['https://github.com/salsina/persian-fluency-detector#egg=persian_fluency_detector', 
                       'https://github.com/salsina/Persian-syllable-counter#egg=persian_syllable_counter'],
