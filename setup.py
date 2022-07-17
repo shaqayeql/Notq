@@ -12,7 +12,14 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(include=["Notq*"]),
     url="https://github.com/shaqayeql/Notq",
-    install_requires=[],
+    install_requires=['torchaudio==0.9.0',
+                        'pydub==0.25.1',
+                        'speechRecognition==3.8.1',
+                        'numpy==1.19.2',
+                        'tqdm==4.61.2',
+                        'transformers==4.11.2',
+                        'torch==1.9.0',
+                        'wget==3.2'],
 
     keywords=['python', 'first package'],
         classifiers= [
