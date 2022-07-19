@@ -42,8 +42,7 @@ from pydub import AudioSegment
 import math
 
 #fluency detector
-from persian_fluency_detector.persian_fluency import *
-
+from persian_fluency_detector import *
 
 
 def caclulate_fluency(filename, fluencyType="SpeechRate"):
