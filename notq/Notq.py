@@ -157,6 +157,11 @@ def VOSK_wav(audio_file_path , output_text_directory):
     except ModuleNotFoundError:
         print("module 'vosk' is not installed. please install vosk==0.3.30")
 
+    wf = wave.open(audio_file_path , "rb")
+    if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
+        print ("Audio file must be WAV format mono PCM.")
+        exit (1)
+
     SetLogLevel(0)
     # file_split = audio_file_path[:-4]
     file_name = audio_file_path.split(os.sep)[-1][:-4]
@@ -173,16 +178,14 @@ def VOSK_wav(audio_file_path , output_text_directory):
         else:
             exit (1)
 
-    wf = wave.open(audio_file_path , "rb")
-    if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
-        print ("Audio file must be WAV format mono PCM.")
-        exit (1)
-
     model = Model("model")
     rec = KaldiRecognizer(model, wf.getframerate())
     rec.SetWords(True)
 
     #clean file
+    if not os.path.exists(output_text_directory):
+        os.makedirs(output_text_directory)
+        
     open(output_text_directory + os.sep + file_name + ".txt", 'w').close()
     while True:
         data = wf.readframes(4000)
@@ -200,7 +203,7 @@ def VOSK_wav(audio_file_path , output_text_directory):
     f = open(output_text_directory + os.sep + file_name + ".txt", "ab")
     f.write(text)
     f.close()
-    print(filename + " is done")
+    print(file_name + ".wav is done")
 
 
 
