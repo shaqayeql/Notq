@@ -57,7 +57,7 @@ def caclulate_fluency(filename, fluencyType="SpeechRate"):
     elif fluencyType == "MeanLengthOfRuns":
         return fluency.get_MeanLengthOfRuns()
     else:
-        return fluency.get_SpeechRate()
+        print("Invalid fluency type...choose either SpeechRate, ArticulationRate, PhonationTimeRatio, or MeanLengthOfRuns")
 
 def speechToText(audio_file_path , functionName="VOSK_wav", output_text_directory = "output" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
     if functionName == "VOSK_wav":
@@ -66,6 +66,8 @@ def speechToText(audio_file_path , functionName="VOSK_wav", output_text_director
         Google_wav(audio_file_path , output_text_directory)
     elif functionName == "Microsoft":
         Microsoft(audio_file_path , subscription , region)
+    else:
+        print("Invalid speech to text converter tool...choose either VOSK_wav, Google_wav, or Microsoft")
 
 def convert_dir_mp3_to_wav(audio_path , singleFilePath = False):
     """ This function converts mp3 file/files to wav file/files. If singleFilePath sets False,
@@ -178,6 +180,7 @@ def VOSK_wav(audio_file_path , output_text_directory):
         else:
             exit (1)
 
+    print("Vosk started...")
     model = Model("model")
     rec = KaldiRecognizer(model, wf.getframerate())
     rec.SetWords(True)
@@ -207,20 +210,20 @@ def VOSK_wav(audio_file_path , output_text_directory):
 
 
 
-def Google_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_directory" , directory_text = "your_text_directory"):
+def Google_wav(audio_file_path , output_text_directory):
     """ This function convers speech to text with Google.
         filename is the name of file that we want convert it.
         directory_voice is the directory that our file is there.
         directory_text is the directory that output text saves there."""
 
     #!/usr/bin/env python3
+    print("Google started...")
 
     # obtain path to "english.wav" in the same folder as this script
-    AUDIO_FILE = (directory_voice + os.sep + filename)
 
     # use the audio file as the audio source
     r = sr.Recognizer()
-    with sr.AudioFile(AUDIO_FILE) as source:
+    with sr.AudioFile(audio_file_path) as source:
         audio = r.record(source)  # read the entire audio file
 
     # recognize speech using Google Speech Recognition
@@ -229,16 +232,24 @@ def Google_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_d
         # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
         # instead of `r.recognize_google(audio)`
 
-        file_split = filename[:-4]
+        wf = wave.open(audio_file_path , "rb")
+        if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
+            print ("Audio file must be WAV format mono PCM.")
+            exit (1)
+
+        file_name = audio_file_path.split(os.sep)[-1][:-4]
 
         #clean file
-        open(directory_text + os.sep + file_split + ".txt", 'w').close()
+        if not os.path.exists(output_text_directory):
+            os.makedirs(output_text_directory)
+            
+        open(output_text_directory + os.sep + file_name + ".txt", 'w').close()
 
-        f = open(directory_text + os.sep + file_split + ".txt", "ab")
+        f = open(output_text_directory + os.sep + file_name + ".txt", "ab")
         f.write(r.recognize_google(audio,language ='fa-IR').encode("utf-8"))
         f.close()
 
-        print(filename + " is done")
+        print(file_name + " is done")
     except sr.UnknownValueError:
         print("Google Speech Recognition could not understand audio")
     except sr.RequestError as e:
