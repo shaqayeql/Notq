@@ -10,7 +10,7 @@ setup(
     long_description=readme,
     author='Nbic',
     long_description_content_type="text/markdown",
-    packages=find_packages(include=["Notq*"]),
+    packages=find_packages(include=["notq*"]),
     url="https://github.com/shaqayeql/Notq",
     install_requires=['torchaudio ==0.9.0',
                         'pydub ==0.25.1',
