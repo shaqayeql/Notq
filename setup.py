@@ -4,7 +4,7 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 setup(
-    name='Notq',
+    name='notq',
     version='1.0.0',
     description='Notq is a Python base tool collected and developed for speech and language processing in Persian',
     long_description=readme,
