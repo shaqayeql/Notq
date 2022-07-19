@@ -1,1 +1,0 @@
-from notq.Notq import *
