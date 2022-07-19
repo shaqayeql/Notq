@@ -59,16 +59,13 @@ def caclulate_fluency(filename, fluencyType="SpeechRate"):
     else:
         return fluency.get_SpeechRate()
 
-def speechToText(functionName , filename = "your_file_name.wav" , directory_voice = "your_voice_directory" , directory_text = "your_text_directory" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
+def speechToText(audio_file_path , functionName="VOSK_wav", output_text_directory = "output" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
     if functionName == "VOSK_wav":
-        VOSK_wav(filename , directory_voice , directory_text)
+        VOSK_wav(audio_file_path , output_text_directory)
     elif functionName == "Google_wav":
-        Google_wav(filename , directory_voice , directory_text)
+        Google_wav(audio_file_path , output_text_directory)
     elif functionName == "Microsoft":
-        Microsoft(filename , subscription , region)
-    else:
-        VOSK_wav(filename , directory_voice , directory_text)
-
+        Microsoft(audio_file_path , subscription , region)
 
 def convert_dir_mp3_to_wav(audio_path , singleFilePath = False):
     """ This function converts mp3 file/files to wav file/files. If singleFilePath sets False,
@@ -149,7 +146,7 @@ def resample(directory_resample , sampleRate, singleFilePath = False):
 
 
 
-def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_directory" , directory_text = "your_text_directory"):
+def VOSK_wav(audio_file_path , output_text_directory):
     """ This function convers speech to text.
         filename is the name of file that we want convert it.
         directory_voice is the directory that our file is there.
@@ -161,8 +158,9 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
         print("module 'vosk' is not installed. please install vosk==0.3.30")
 
     SetLogLevel(0)
-    file_split = filename[:-4]
-
+    # file_split = audio_file_path[:-4]
+    file_name = audio_file_path.split(os.sep)[-1][:-4]
+    
     if not os.path.exists("model"):
         installation = input("The Vosk model is not Installed. If you want install the model, Please enter \"Yes\" otherwise enter \"No\":")
         if (installation=="Yes" or installation=="yes") :
@@ -175,7 +173,7 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
         else:
             exit (1)
 
-    wf = wave.open(directory_voice + os.sep + filename , "rb")
+    wf = wave.open(audio_file_path , "rb")
     if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
         print ("Audio file must be WAV format mono PCM.")
         exit (1)
@@ -185,7 +183,7 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
     rec.SetWords(True)
 
     #clean file
-    open(directory_text + os.sep + file_split + ".txt", 'w').close()
+    open(output_text_directory + os.sep + file_name + ".txt", 'w').close()
     while True:
         data = wf.readframes(4000)
         if len(data) == 0:
@@ -193,13 +191,13 @@ def VOSK_wav(filename = "your_file_name.wav" , directory_voice = "your_voice_dir
         if rec.AcceptWaveform(data):
             string = rec.Result()
             text = string[string.find('"text"')+10:-3] + " "
-            f = open(directory_text + os.sep + file_split + ".txt", "ab")
+            f = open(output_text_directory + os.sep + file_name + ".txt", "ab")
             f.write(text.encode("utf-8"))
             f.close()
 
     string = rec.FinalResult()
     text = string[string.find('"text"')+10:-3].encode("utf-8")
-    f = open(directory_text + os.sep + file_split + ".txt", "ab")
+    f = open(output_text_directory + os.sep + file_name + ".txt", "ab")
     f.write(text)
     f.close()
     print(filename + " is done")
