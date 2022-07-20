@@ -476,12 +476,16 @@ def silenceTime(audio_file_path, min_silence_time=100, silence_threshhold = None
 
     return Silence
 
-def split_wavfile(audio_file_path, output_directory_path="notq_outputs", dividing_len=60):
+def splitAudiofile(audio_file_path, output_directory_path="notq_outputs", dividing_len=60):
 
-    audio = AudioSegment.from_wav(audio_file_path)
+    audio_file_format = audio_file_path[-3:]
+    if audio_file_format != "mp3" and audio_file_format != "wav":
+        print("audio file format must be .mp3 or .wav")
+        return
+    audio = AudioSegment.from_file(audio_file_path, audio_file_format)
     file_name = audio_file_path.split(os.sep)[-1][:-4]
 
-    total_seconds = audio.duration_seconds
+    total_seconds = math.ceil(audio.duration_seconds)
     num = 0
     
     for i in range(0, total_seconds, dividing_len):
@@ -492,7 +496,7 @@ def split_wavfile(audio_file_path, output_directory_path="notq_outputs", dividin
         newAudio = audio[t1:t2]
         if not os.path.exists(output_directory_path):
             os.makedirs(output_directory_path)
-        dest = output_directory_path + os.sep + "splitted_" +file_name + f'_part{num}.wav'
-        newAudio.export(dest, format="wav")
+        dest = output_directory_path + os.sep + "splitted_" +file_name + f'_part{num}.' + audio_file_format
+        newAudio.export(dest, format=audio_file_format)
         num+=1
     print('All splited successfully')
