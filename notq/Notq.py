@@ -95,7 +95,7 @@ def mp3ToWav(audio_path , output_directory_path="notq_outputs"+os.sep+"wav_audio
         for files in types:
             files_list.extend(glob.glob(files))
         for f in files_list:       
-            filename = f[:-4]
+            filename = f.split(os.sep)[-1][:-4]
             src = f
             dst = output_directory_path + os.sep + filename + ".wav"
             sound = AudioSegment.from_mp3(src)
