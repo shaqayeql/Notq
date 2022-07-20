@@ -45,7 +45,7 @@ import math
 from persian_fluency_detector import *
 
 
-def caclulate_fluency(filename, fluencyType="SpeechRate"):
+def getFluency(filename, fluencyType="SpeechRate"):
     fluency = Fluency(filename)
 
     if fluencyType == "SpeechRate":
@@ -69,12 +69,12 @@ def speechToText(audio_file_path , functionName="VOSK_wav", output_text_director
     else:
         print("Invalid speech to text converter tool...choose either VOSK_wav, Google_wav, or Microsoft")
 
-def convert_dir_mp3_to_wav(audio_path , output_directory_path="outputs"+os.sep+"wav_audio_files", singleFilePath = True):
+def mp3ToWav(audio_path , output_directory_path="notq_outputs"+os.sep+"wav_audio_files", singleFilePath = True):
     """ This function converts mp3 file/files to wav file/files. If singleFilePath sets False,
         that means audio_path should be path of one directory. But if it sets True, that means 
         audio_path should be path of one file """
 
-    #if have one file
+    #Single file
     if(singleFilePath):
         if audio_path[-4:] != ".mp3":
             print("The input audio file format is not mp3")
@@ -86,10 +86,9 @@ def convert_dir_mp3_to_wav(audio_path , output_directory_path="outputs"+os.sep+"
         if not os.path.exists(output_directory_path):
             os.makedirs(output_directory_path)
         sound.export(dst, format="wav")
-        command = "It's ok"
         print("Successful .mp3 to .wav conversion for file: " + filename + ".mp3")
 
-    #if have multi files
+    #Multiple files
     else:
         types = (audio_path + os.sep + '*.mp3',)
         files_list = []
@@ -98,15 +97,13 @@ def convert_dir_mp3_to_wav(audio_path , output_directory_path="outputs"+os.sep+"
         for f in files_list:       
             filename = f[:-4]
             src = f
-            dst = filename + ".mp3.wav"
-            print(src)
+            dst = output_directory_path + os.sep + filename + ".wav"
             sound = AudioSegment.from_mp3(src)
+            if not os.path.exists(output_directory_path):
+                os.makedirs(output_directory_path)
             sound.export(dst, format="wav")
-            command = "It's ok"
-            print(command)
+            print("Successful .mp3 to .wav conversion for file: " + filename + ".mp3")
     
-
-
 
 def resample(directory_resample , sampleRate, singleFilePath = False):
     """ This function changes sample rate of file/files to sampleRate. If singleFilePath sets
