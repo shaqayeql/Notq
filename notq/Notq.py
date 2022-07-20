@@ -466,11 +466,12 @@ def predict(model, comments, tokenizer, max_len=128, batch_size=32):
     return predictions, prediction_probs
 ###
 
-def silenceTime(filePath = "your-filePath"):
-    myaudio = AudioSegment.from_wav(filePath)
-    dBFS=myaudio.dBFS
+def silenceTime(audio_file_path, min_silence_time=100, silence_threshhold = None):
+    myaudio = AudioSegment.from_wav(audio_file_path)
+    if silence_threshhold == None:
+        silence_threshhold=myaudio.dBFS - 16
     
-    Silence = silence.detect_silence(myaudio, min_silence_len=100, silence_thresh=dBFS-16)
+    Silence = silence.detect_silence(myaudio, min_silence_len=min_silence_time, silence_thresh=silence_threshhold)
     Silence = [((start/1000),(stop/1000)) for start,stop in Silence] #convert to sec
 
     return Silence
