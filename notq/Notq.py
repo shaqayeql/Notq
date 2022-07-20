@@ -59,7 +59,7 @@ def getFluency(filename, fluencyType="SpeechRate"):
     else:
         print("Invalid fluency type...choose either SpeechRate, ArticulationRate, PhonationTimeRatio, or MeanLengthOfRuns")
 
-def speechToText(audio_file_path , functionName="VOSK_wav", output_text_directory = "output" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
+def speechToText(audio_file_path , functionName="VOSK_wav", output_text_directory = "notq_outputs"+os.sep+"text_files" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
     if functionName == "VOSK_wav":
         VOSK_wav(audio_file_path , output_text_directory)
     elif functionName == "Google_wav":
@@ -274,18 +274,16 @@ def Microsoft(audio_file_path = "your_file_name.wav" , subscription = "<paste-yo
     return result.text
 
 
+from numpy.linalg import norm
 
 # Similarity
-def similarity(similarityModelPath = "your_model_path"):
-
+def loadSimilarityModel(similarityModelPath):
     if not os.path.exists("cc.fa.300.bin"):
-        print("Please download model from https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz and unzip that")
+        print("Please download model from https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz and unzip that near your files")
         exit(1)
-
 
     try:
         import fasttext
-        print("module 'fasttext' is installed")
     except ModuleNotFoundError:
         print("module 'fasttext' is not installed")
 
@@ -293,6 +291,10 @@ def similarity(similarityModelPath = "your_model_path"):
     return m_model
 
 
+def cosineSimilarity(sentence1, sentence2, similarityModel):
+    x = similarityModel.get_sentence_vector(sentence1)
+    y = similarityModel.get_sentence_vector(sentence2)
+    return np.inner(x, y) / (norm(x) * norm(y))
 
 
 # Sentiment
