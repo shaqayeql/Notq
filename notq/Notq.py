@@ -69,21 +69,25 @@ def speechToText(audio_file_path , functionName="VOSK_wav", output_text_director
     else:
         print("Invalid speech to text converter tool...choose either VOSK_wav, Google_wav, or Microsoft")
 
-def convert_dir_mp3_to_wav(audio_path , singleFilePath = False):
+def convert_dir_mp3_to_wav(audio_path , output_directory_path="outputs"+os.sep+"wav_audio_files", singleFilePath = True):
     """ This function converts mp3 file/files to wav file/files. If singleFilePath sets False,
         that means audio_path should be path of one directory. But if it sets True, that means 
         audio_path should be path of one file """
 
     #if have one file
     if(singleFilePath):
+        if audio_path[:-4] != ".mp3":
+            print("The input audio file format is not mp3")
+            return
         filename = audio_path.split(os.sep)[-1][:-4]
         src = audio_path
-        dst = filename + ".mp3.wav"
-        print("source :", src)
+        dst = output_directory_path + os.sep + filename + ".wav"
         sound = AudioSegment.from_mp3(src)
+        if not os.path.exists(output_directory_path):
+            os.makedirs(output_directory_path)
         sound.export(dst, format="wav")
         command = "It's ok"
-        print("Successful .mp3 to .wav conversion")
+        print("Successful .mp3 to .wav conversion for file: " + filename + ".mp3")
 
     #if have multi files
     else:
