@@ -76,7 +76,7 @@ def convert_dir_mp3_to_wav(audio_path , output_directory_path="outputs"+os.sep+"
 
     #if have one file
     if(singleFilePath):
-        if audio_path[:-4] != ".mp3":
+        if audio_path[-4:] != ".mp3":
             print("The input audio file format is not mp3")
             return
         filename = audio_path.split(os.sep)[-1][:-4]

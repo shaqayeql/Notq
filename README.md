@@ -12,7 +12,7 @@ pip install git+https://github.com/salsina/Persian-syllable-counter#egg=persian_
 
 ## Install
 ```python
-pip install git+https://github.com/shaqayeql/Notq#egg=Notq
+pip install git+https://github.com/shaqayeql/Notq#egg=notq
 ```
 
 ## Documentation
