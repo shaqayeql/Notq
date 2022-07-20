@@ -76,25 +76,25 @@ def convert_dir_mp3_to_wav(audio_path , singleFilePath = False):
 
     #if have one file
     if(singleFilePath):
-        f_split = audio_path[:-4]
+        filename = audio_path.split(os.sep)[-1][:-4]
         src = audio_path
-        dst = f_split + ".mp3.wav"
-        print(src)
+        dst = filename + ".mp3.wav"
+        print("source :", src)
         sound = AudioSegment.from_mp3(src)
         sound.export(dst, format="wav")
         command = "It's ok"
-        print(command)
+        print("Successful .mp3 to .wav conversion")
 
     #if have multi files
     else:
         types = (audio_path + os.sep + '*.mp3',)
         files_list = []
         for files in types:
-         files_list.extend(glob.glob(files))
+            files_list.extend(glob.glob(files))
         for f in files_list:       
-            f_split = f[:-4]
+            filename = f[:-4]
             src = f
-            dst = f_split + ".mp3.wav"
+            dst = filename + ".mp3.wav"
             print(src)
             sound = AudioSegment.from_mp3(src)
             sound.export(dst, format="wav")
@@ -257,7 +257,7 @@ def Google_wav(audio_file_path , output_text_directory):
 
 
 #Microsoft Speech To Text
-def Microsoft(filename = "your_file_name.wav" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
+def Microsoft(audio_file_path = "your_file_name.wav" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
     """ This function converts speech to text using microsoft azure. """
     
     try:
@@ -266,7 +266,7 @@ def Microsoft(filename = "your_file_name.wav" , subscription = "<paste-your-spee
         print("module 'azure-cognitiveservices-speech' is not installed. please install azure-cognitiveservices-speech==1.20.0")
 
     speech_config = speechsdk.SpeechConfig(subscription , region)
-    audio_input = speechsdk.AudioConfig(filename)
+    audio_input = speechsdk.AudioConfig(audio_file_path)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, language="fa" , audio_config=audio_input)
     
     result = speech_recognizer.recognize_once_async().get()
