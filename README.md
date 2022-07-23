@@ -84,7 +84,7 @@ similarityModel = loadSimilarityModel("cc.fa.300.bin")
 ```
 
 ## cosineSimilarity
-This function finds cosine similarity between sentences using [model](https://github.com/shaqayeql/Notq#loadsimilaritymodel) .
+This function finds cosine similarity between sentences.
 ### Arguments
 - sentence1: The first sentence in string format.
 - sentence2: The second sentence in string format.
@@ -94,6 +94,20 @@ This function finds cosine similarity between sentences using [model](https://gi
 ```python
 similarity = cosineSimilarity("من امروز به باشگاه رفتم", "امروز بود که بنده به باشگاه ورزش رجوع کردم", similarityModel)
 ```
+## sentiment(needs to be changed)
+
+## splitAudiofile
+This function splits **.wav** and **.mp3** audio files into smaller parts.
+### Arguments
+- audio_file_path: The path of the **.wav** or **.mp3** audio file
+- output_directory_path: The directory in which the splitted files would be saved. Default value is "notq_outputs" + os.sep +file_name + "_splitted".
+- dividing_len: The length of splitted audio files in seconds. The default value is 60.
+
+### Example
+```python
+splitAudiofile("VOICE_AD\\titleA.mp3", output_directory_path="myDirectory", dividing_len = 120)
+```
+
 
 ### fluency
 This function calculates fluency factors in a .wav speech audio file, which are "SpeechRate", "ArticulationRate", "PhonationTimeRatio", "MeanLengthOfRuns".
