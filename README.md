@@ -74,9 +74,9 @@ microsoft_from_file(filename , subscription , region)
 ``` -->
 
 ## loadSimilarityModel
-This function returns a similarity model by getting a [similarity model](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz) as an input.
+This function returns a similarity model by getting a [similarity model](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz) path as an input.
 ### Arguments
-- similarityModelPath: The path of similarity model in user's computer. 
+- similarityModelPath: The path of similarity model. The model has a size of about 4GBs. Please be be careful to address the **.bin** file to the input.
 
 ### Example
 ```python
@@ -84,11 +84,11 @@ similarityModel = loadSimilarityModel("cc.fa.300.bin")
 ```
 
 ## cosineSimilarity
-This function finds cosine similarity between sentences using [model](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz) .
+This function finds cosine similarity between sentences using [model](https://github.com/shaqayeql/Notq#loadsimilaritymodel) .
 ### Arguments
 - sentence1: The first sentence in string format.
 - sentence2: The second sentence in string format.
-- similarityModel: The model object got from the loadSimilarityModel function (mentioned above).
+- similarityModel: The model object got from the [loadSimilarityModel](https://github.com/shaqayeql/Notq#loadsimilaritymodel) function (mentioned above).
 
 ### Example
 ```python
