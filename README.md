@@ -108,7 +108,7 @@ This function splits **.wav** and **.mp3** audio files into smaller parts.
 splitAudiofile("VOICE_AD\\titleA.mp3", output_directory_path="myDirectory", dividing_len = 120)
 ```
 
-# silenceTime
+## silenceTime
 This function returns a list of the beginings and the ends of silence times in a **.wav** audio file.
 ### Arguments
 - audio_file_path: The path of the **.wav** audio file
@@ -120,11 +120,20 @@ This function returns a list of the beginings and the ends of silence times in a
 silenceTime("VOICE_AD\\titleA.mp3", min_silence_time=200)
 ```
 
-### fluency
-This function calculates fluency factors in a .wav speech audio file, which are "SpeechRate", "ArticulationRate", "PhonationTimeRatio", "MeanLengthOfRuns".
-The default value for fluency factor type is "SpeechRate".
+## getFluency
+This function calculates fluency factors in a **.wav** audio file.
+### Arguments
+- audio_file_path: The path of the **.wav** audio file
+- fluency_type: The type of fluency factor: "SpeechRate", "ArticulationRate", "PhonationTimeRatio" or "MeanLengthOfRuns". The default value is "SpeechRate".
+    - Speech Rate: This measure is the actual number of syllables uttered, divided by the total speech time in minutes. This is the gross measure of the speed of speech production, it includes the hesitation in the total time spent speaking.
+    - Articulation Rate: This measure is the actual number of syllables uttered, divided by the total amount of time spent speaking. In this case, the hesitation time is eliminated from the calculation; this gives a measure of the speed of actual articulation only.
+    - Phonation Time Ratio: This is determined by totaling the pause times for each sample and calculating it as a percent of the total speech time. It indicates the amount of hesitation relative to actual speaking time, a combined measure of pause frequency and duration.
+    - Mean Length of Runs: The mean number of syllables uttered between hesitations. It indicates the length of utterance between pauses.
+
+### Example
 ```python
-caclulate_fluency(filename, fluencyType)
+getFluency("VOICE_AD\\titleA.mp3", fluencyType="ArticulationRate")
 ```
+
 ## Test
 You can run test.py for testing functions that used in Notq library.

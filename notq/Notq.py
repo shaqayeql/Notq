@@ -45,16 +45,16 @@ import math
 from persian_fluency_detector import *
 
 
-def getFluency(filename, fluencyType="SpeechRate"):
-    fluency = Fluency(filename)
+def getFluency(audio_file_path, fluency_type="SpeechRate"):
+    fluency = Fluency(audio_file_path)
 
-    if fluencyType == "SpeechRate":
+    if fluency_type == "SpeechRate":
         return fluency.get_SpeechRate()
-    elif fluencyType == "ArticulationRate":
+    elif fluency_type == "ArticulationRate":
         return fluency.get_ArticulationRate()
-    elif fluencyType == "PhonationTimeRatio":
+    elif fluency_type == "PhonationTimeRatio":
         return fluency.get_PhonationTimeRatio()
-    elif fluencyType == "MeanLengthOfRuns":
+    elif fluency_type == "MeanLengthOfRuns":
         return fluency.get_MeanLengthOfRuns()
     else:
         print("Invalid fluency type...choose either SpeechRate, ArticulationRate, PhonationTimeRatio, or MeanLengthOfRuns")
