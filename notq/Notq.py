@@ -59,12 +59,12 @@ def getFluency(filename, fluencyType="SpeechRate"):
     else:
         print("Invalid fluency type...choose either SpeechRate, ArticulationRate, PhonationTimeRatio, or MeanLengthOfRuns")
 
-def speechToText(audio_file_path , functionName="VOSK_wav", output_text_directory = "notq_outputs"+os.sep+"text_files" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
-    if functionName == "VOSK_wav":
+def speechToText(audio_file_path , function_name="VOSK_wav", output_text_directory = "notq_outputs"+os.sep+"text_files" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
+    if function_name == "VOSK_wav":
         VOSK_wav(audio_file_path , output_text_directory)
-    elif functionName == "Google_wav":
+    elif function_name == "Google_wav":
         Google_wav(audio_file_path , output_text_directory)
-    elif functionName == "Microsoft":
+    elif function_name == "Microsoft":
         Microsoft(audio_file_path , subscription , region)
     else:
         print("Invalid speech to text converter tool...choose either VOSK_wav, Google_wav, or Microsoft")
