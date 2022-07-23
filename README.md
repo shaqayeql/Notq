@@ -108,6 +108,17 @@ This function splits **.wav** and **.mp3** audio files into smaller parts.
 splitAudiofile("VOICE_AD\\titleA.mp3", output_directory_path="myDirectory", dividing_len = 120)
 ```
 
+# silenceTime
+This function returns a list of the beginings and the ends of silence times in a **.wav** audio file.
+### Arguments
+- audio_file_path: The path of the **.wav** audio file
+- min_silence_time: The minimum silence time that counts as silence in miliseconds. The default value is 100.
+- silence_threshhold: The minimum threshhold for frequency of silence times. The default value is inputAudio.dBFS - 16.
+
+### Example
+```python
+silenceTime("VOICE_AD\\titleA.mp3", min_silence_time=200)
+```
 
 ### fluency
 This function calculates fluency factors in a .wav speech audio file, which are "SpeechRate", "ArticulationRate", "PhonationTimeRatio", "MeanLengthOfRuns".
