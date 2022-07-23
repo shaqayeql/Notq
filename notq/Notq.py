@@ -105,15 +105,15 @@ def mp3ToWav(audio_file_path , output_directory_path="notq_outputs"+os.sep+"wav_
             print("Successful .mp3 to .wav conversion for file: " + filename + ".mp3")
     
 
-def resample(directory_resample , sampleRate, singleFilePath = False):
+def resample(audio_file_path , sampleRate, singleFilePath = False):
     """ This function changes sample rate of file/files to sampleRate. If singleFilePath sets
         False, that means audio_path should be path of one directory. But if it sets True, that
         means audio_path should be path of one file """
 
     #if have one file
     if(singleFilePath):
-        if directory_resample[-3:] == "wav":
-            fullPath = directory_resample;
+        if audio_file_path[-3:] == "wav":
+            fullPath = audio_file_path;
             waveform, sample_rate = torchaudio.load(fullPath)           
             print("***************")
             print(fullPath)
@@ -129,10 +129,10 @@ def resample(directory_resample , sampleRate, singleFilePath = False):
 
     #if have multi files
     else:
-        arr = os.listdir(directory_resample)
+        arr = os.listdir(audio_file_path)
         for file in arr:
             if file[-3:] == "wav":
-                fullPath = directory_resample + os.sep + file;
+                fullPath = audio_file_path + os.sep + file;
                 waveform, sample_rate = torchaudio.load(fullPath)
                 print("***************")
                 print(fullPath)

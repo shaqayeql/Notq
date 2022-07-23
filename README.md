@@ -21,7 +21,7 @@ Before you get started, here's a list of functions you can use:
 ## speechToText
 This function converts audio files to text files.
 ### Arguments
-- audio_file_path: The path of the WAV audio file 
+- audio_file_path: The path of the **.wav** audio file 
 - function_name: The tool of speech-to-text converter user wants to use. it can have the values of “VOSK_wav”, “Google_wav” or “Microsoft”. If no argument is given, the default value would be “VOSK_wav”.
 - output_text_directory: The directory in which the output text file would be saved. Default value is "notq_outputs"+os.sep+"text_files".
 - subscription: The subscription for microsoft azure.
@@ -29,26 +29,35 @@ This function converts audio files to text files.
 
 ### Example
 ```python
-speechToText(audio_file_path, function_name="Google_wav", output_text_directory="myDirectory\\myTextFiles")
+speechToText("VOICE_AD\\titleA.mp3", function_name="Google_wav", output_text_directory="myDirectory\\myTextFiles")
 
 ```
 
 ## mp3ToWav
 This function converts mp3 file/files to wav file/files. 
 ### Arguments
-- audio_file_path: The path of the MP3 audio file/files 
+- audio_file_path: The path of the **.mp3** audio file/files 
 - output_directory_path: The directory in which the output **.wav** file/files would be saved. Default value is "notq_outputs"+os.sep+"wav_audio_files".
 - singleFilePath: A boolean which indicates whether there are multiple MP3 files the user wants to convert or there is only one file. If sets to **False**, the "audio_file_path" argument must be the path of a directory; otherwise, the audio_file_path" argument must be the path of a single MP3 file. The default value is True.
 
+### Example
 ```python
-mp3ToWav(audio_file_path, output_directory_path="myDirectory")
+mp3ToWav("VOICE_AD\\titleA.mp3", output_directory_path="myDirectory")
 ```
-### resample
-This function changes sample rate of file/files to the desired rate. If singleFilePath sets False, that means audio_path should be path of one directory(include many audio files). But if it sets True, that means audio_path should be path of single audio file.
+## resample(needs to be fixed)
+This function changes sample rate of file/files to the desired rate.
+### Arguments
+- audio_file_path: The path of the **.wav** audio file/files 
+- sampleRate: The desired sample rate of the output file. Default value is 
+- output_directory_path: The directory in which the output **.wav** file/files would be saved. Default value is "notq_outputs"+os.sep+"wav_audio_files".
+- singleFilePath: A boolean which indicates whether there are multiple MP3 files the user wants to convert or there is only one file. If sets to **False**, the "audio_file_path" argument must be the path of a directory; otherwise, the audio_file_path" argument must be the path of a single **.wav** file. The default value is True.
+
+### Example
 ```python
-resample(directory_resample , sampleRate, singleFilePath = False)
+resample("VOICE_AD\\titleA.mp3" , sampleRate)
 ```
-### VOSK_wav
+
+<!-- ### VOSK_wav
 [Vosk](https://alphacephei.com/vosk/) is an offline speech recognition toolkit and this function converts speech to text using Vosk toolkit. filename is the name of file that we want convert it. directory_voice is the directory that our file is there. directory_text is the directory that output text saves there.
 ```python
 VOSK_wav(filename , directory_voice , directory_text)
@@ -62,17 +71,30 @@ Google_wav(filename , directory_voice , directory_text)
 This function converts speech to text using [microsoft azure](https://azure.microsoft.com/en-us/services/cognitive-services/speech-to-text/#overview).
 ```python
 microsoft_from_file(filename , subscription , region)
-```
-### similarity
-This function finds similarities between sentences using [model](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz) .
+``` -->
+
+## loadSimilarityModel
+This function returns a similarity model by getting a [similarity model](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz) as an input.
+### Arguments
+- similarityModelPath: The path of similarity model in user's computer. 
+
+### Example
 ```python
-similarity(similarityModelPath)
+similarityModel = loadSimilarityModel("cc.fa.300.bin")
 ```
-### sentiment
-This function finds semantic similarity between sentences.
+
+## cosineSimilarity
+This function finds cosine similarity between sentences using [model](https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.bin.gz) .
+### Arguments
+- sentence1: The first sentence in string format.
+- sentence2: The second sentence in string format.
+- similarityModel: The model object got from the loadSimilarityModel function (mentioned above).
+
+### Example
 ```python
-sentiment(sentimentFilename , sentimentModelPath)
+similarity = cosineSimilarity("من امروز به باشگاه رفتم", "امروز بود که بنده به باشگاه ورزش رجوع کردم", similarityModel)
 ```
+
 ### fluency
 This function calculates fluency factors in a .wav speech audio file, which are "SpeechRate", "ArticulationRate", "PhonationTimeRatio", "MeanLengthOfRuns".
 The default value for fluency factor type is "SpeechRate".
