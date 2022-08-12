@@ -61,11 +61,11 @@ def getFluency(audio_file_path, fluency_type="SpeechRate"):
 
 def speechToText(audio_file_path , function_name="VOSK_wav", output_text_directory = "notq_outputs"+os.sep+"text_files" , subscription = "<paste-your-speech-key-here>" , region = "<paste-your-speech-location/region-here>"):
     if function_name == "VOSK_wav":
-        VOSK_wav(audio_file_path , output_text_directory)
+        return VOSK_wav(audio_file_path , output_text_directory)
     elif function_name == "Google_wav":
-        Google_wav(audio_file_path , output_text_directory)
+        return Google_wav(audio_file_path , output_text_directory)
     elif function_name == "Microsoft":
-        Microsoft(audio_file_path , subscription , region)
+        return Microsoft(audio_file_path , subscription , region)
     else:
         print("Invalid speech to text converter tool...choose either VOSK_wav, Google_wav, or Microsoft")
 
@@ -191,6 +191,7 @@ def VOSK_wav(audio_file_path , output_text_directory):
         os.makedirs(output_text_directory)
         
     open(output_text_directory + os.sep + file_name + ".txt", 'w').close()
+    final_text = ""
     while True:
         data = wf.readframes(4000)
         if len(data) == 0:
@@ -201,14 +202,16 @@ def VOSK_wav(audio_file_path , output_text_directory):
             f = open(output_text_directory + os.sep + file_name + ".txt", "ab")
             f.write(text.encode("utf-8"))
             f.close()
+            final_text += text
 
     string = rec.FinalResult()
     text = string[string.find('"text"')+10:-3].encode("utf-8")
     f = open(output_text_directory + os.sep + file_name + ".txt", "ab")
     f.write(text)
     f.close()
+    final_text += text
     print(file_name + ".wav is done")
-
+    return final_text
 
 
 def Google_wav(audio_file_path , output_text_directory):
@@ -245,12 +248,13 @@ def Google_wav(audio_file_path , output_text_directory):
             os.makedirs(output_text_directory)
             
         open(output_text_directory + os.sep + file_name + ".txt", 'w').close()
-
+        final_text = r.recognize_google(audio,language ='fa-IR').encode("utf-8")
         f = open(output_text_directory + os.sep + file_name + ".txt", "ab")
         f.write(r.recognize_google(audio,language ='fa-IR').encode("utf-8"))
         f.close()
 
         print(file_name + " is done")
+        return final_text
     except sr.UnknownValueError:
         print("Google Speech Recognition could not understand audio")
     except sr.RequestError as e:
