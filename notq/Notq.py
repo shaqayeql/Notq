@@ -205,11 +205,12 @@ def VOSK_wav(audio_file_path , output_text_directory):
             final_text += text
 
     string = rec.FinalResult()
-    text = string[string.find('"text"')+10:-3].encode("utf-8")
+    not_encoded_text = string[string.find('"text"')+10:-3]
+    text = not_encoded_text.encode("utf-8")
     f = open(output_text_directory + os.sep + file_name + ".txt", "ab")
     f.write(text)
     f.close()
-    final_text += text
+    final_text += not_encoded_text
     print(file_name + ".wav is done")
     return final_text
 
@@ -248,9 +249,10 @@ def Google_wav(audio_file_path , output_text_directory):
             os.makedirs(output_text_directory)
             
         open(output_text_directory + os.sep + file_name + ".txt", 'w').close()
-        final_text = r.recognize_google(audio,language ='fa-IR').encode("utf-8")
+        
+        final_text = r.recognize_google(audio,language ='fa-IR')
         f = open(output_text_directory + os.sep + file_name + ".txt", "ab")
-        f.write(r.recognize_google(audio,language ='fa-IR').encode("utf-8"))
+        f.write(final_text.encode("utf-8"))
         f.close()
 
         print(file_name + " is done")
