@@ -45,7 +45,7 @@ similarityModelPath = os.getcwd()+"\\cc.fa.300.bin"
 ## Test /silenceTime/
 ''' print(silenceTime(singlePath_resample)) '''
 
-## TEST similarity
+## TEST /similarity/
 ''' from numpy.linalg import norm
 
 def cosine_sim(a, b):
@@ -65,7 +65,7 @@ wz = cosine_sim(z,w)
 print(xy,yz,zx,xw,wy,wz) '''
 
 
-## TEST sentiment
+## TEST /sentiment/
 ''' print(sentiment(['دوست داشتنی بود'
                                         ,'واقعا از قدرت نویسنده لذت بردم داستان کوتاهیه ولی به قول یکی از دوستان داستان تا همیشه گوشه‌ای از ذهن ادم‌میمونه خیلی خوب بود خیلی'
                                         ,'اصلا خوب نبود'])) '''
@@ -88,3 +88,7 @@ print(xy,yz,zx,xw,wy,wz) '''
 
 ## Test /split_wavfile/
 ''' split_wavfile(singlePath_resample , directory_voice) '''
+
+## Test /emotion Recognition/
+''' path = "/path/to/your_file.wav"
+outputs = emotionRecognition(path) '''
